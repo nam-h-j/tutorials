@@ -63,18 +63,18 @@ $ docker logs {CONTAINER ID}
 
 #### 컨테이너 레지스트리에 푸시하기(도커허브 dockerhub)
 1. 도커허브에서 리포지토리 생성
-1. 리포지토리 생성하면 리포지토리 주소가 생성되는데 (userid/repo-name)이 이름과 이미지 파일 이름을 매칭시켜야함
+2. 리포지토리 생성하면 리포지토리 주소가 생성되는데 (userid/repo-name)이 이름과 이미지 파일 이름을 매칭시켜야함
 ```
 # 이미지 이름 추가하는 방법
 $ docker tag test-docker-image:latest userid/test-docker-image:latest
 $ docker tag {도커이미지이름:tag} {변경할이름:tag}
 ```
-1. docker images 명령어로 이름이 들어가있는지 확인
-1. 로그인
+3. docker images 명령어로 이름이 들어가있는지 확인
+4. 로그인
 ```
 $ docker login
 ```
-1. 푸시
+5. 푸시
 ```
 $ docker push userid/test-docker-image:latest
 ```
