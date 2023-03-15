@@ -2,6 +2,7 @@ package myapp
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -95,15 +96,15 @@ func TestDeleteUser(t *testing.T) {
 	// 요청 테스트시 Delete는 Go에서 기본으로 제공되지 않으므로
 	//NewRequest + DefaultClient.Do로 요청해야함
 	req, _ := http.NewRequest("DELETE", ts.URL+"/user/1", nil)
-	resp, err := http.DefaultClient.Do(req)
+	res, err := http.DefaultClient.Do(req)
 	assert.NoError(err)
-	assert.Equal(http.StatusOK, resp.StatusCode)
-	data, _ := ioutil.ReadAll(resp.Body)
+	assert.Equal(http.StatusOK, res.StatusCode)
+	data, _ := ioutil.ReadAll(res.Body)
 	assert.Contains(string(data), "No User ID : 1")
 
 	//등록해서 삭제 되는지 확인해보기
 	//1. Post 요청
-	res, err := http.Post(ts.URL+"/user", "application/json",
+	res, err = http.Post(ts.URL+"/user", "application/json",
 		strings.NewReader(`{"first_name":"jackson", "last_name":"nam", "email":"now@naver.com"}`))
 	assert.NoError(err)
 	assert.Equal(http.StatusCreated, res.StatusCode)
@@ -116,10 +117,56 @@ func TestDeleteUser(t *testing.T) {
 
 	//3. 삭제 요청 다시 날려서 삭제 확인
 	req, _ = http.NewRequest("DELETE", ts.URL+"/user/1", nil)
-	resp, err = http.DefaultClient.Do(req)
+	res, err = http.DefaultClient.Do(req)
 	assert.NoError(err)
-	assert.Equal(http.StatusOK, resp.StatusCode)
-	data, _ = ioutil.ReadAll(resp.Body)
+	assert.Equal(http.StatusOK, res.StatusCode)
+	data, _ = ioutil.ReadAll(res.Body)
 	assert.Contains(string(data), "Deleted User ID : 1")
 
+}
+func TestPutUser(t *testing.T) {
+	assert := assert.New(t)
+
+	ts := httptest.NewServer(NewHandler())
+	defer ts.Close()
+
+	// 요청 테스트시 PUT역시 Go에서 기본으로 제공되지 않으므로
+	//NewRequest + DefaultClient.Do로 요청해야함
+	req, _ := http.NewRequest("PUT", ts.URL+"/user",
+		strings.NewReader(`{"id":1, "first_name":"updated", "last_name":"updated", "email":"updated@naver.com"}`))
+	res, err := http.DefaultClient.Do(req)
+	assert.NoError(err)
+	assert.Equal(http.StatusOK, res.StatusCode)
+	data, _ := ioutil.ReadAll(res.Body)
+	assert.Contains(string(data), "No User ID : 1")
+
+	// post 하고나서 update 테스트 해보기
+	// 1. post 요청하기
+	res, err = http.Post(ts.URL+"/user", "application/json",
+		strings.NewReader(`{"first_name":"jackson", "last_name":"nam", "email":"jackson@naver.com"}`))
+	assert.NoError(err)
+	assert.Equal(http.StatusCreated, res.StatusCode)
+
+	//2. post 한 유저 정보 ID 뽑아내기
+	user := new(User)
+	err = json.NewDecoder(res.Body).Decode(user)
+	assert.NoError(err)
+	assert.NotEqual(0, user.ID)
+
+	//3. 업데이트하기
+	updateStr := fmt.Sprintf(`{"id":%d, "first_name":"updated"}`, user.ID)
+	req, _ = http.NewRequest("PUT", ts.URL+"/user",
+		strings.NewReader(updateStr))
+	res, err = http.DefaultClient.Do(req)
+	assert.NoError(err)
+	assert.Equal(http.StatusOK, res.StatusCode)
+
+	//4. 업데이트 제대로 되었는지 확인
+	updateUser := new(User)
+	err = json.NewDecoder(res.Body).Decode(updateUser)
+	assert.NoError(err)
+	assert.Equal(updateUser.ID, user.ID)             //아이디가 같은지 검사
+	assert.Equal("updated", updateUser.FirstName)    //데이터가 변경되었는지 검사
+	assert.Equal(user.LastName, updateUser.LastName) //데이터가 그대로인지 검사
+	assert.Equal(user.Email, updateUser.Email)       //데이터가 그대로인지 검사
 }
