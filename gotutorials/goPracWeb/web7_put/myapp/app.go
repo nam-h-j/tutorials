@@ -89,6 +89,37 @@ func deleteUserHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "Deleted User ID : ", id)
 }
 
+func updateUserHandler(w http.ResponseWriter, r *http.Request) {
+	updateUser := new(User) // create User struct
+	err := json.NewDecoder(r.Body).Decode(updateUser)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(w, err)
+		return
+	}
+
+	// Update User
+	user, ok := userMap[updateUser.ID]
+	if !ok {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, "No User ID : ", updateUser.ID)
+		return
+	}
+	if updateUser.FirstName != "" {
+		user.FirstName = updateUser.FirstName
+	}
+	if updateUser.LastName != "" {
+		user.LastName = updateUser.LastName
+	}
+	if updateUser.Email != "" {
+		user.Email = updateUser.Email
+	}
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	data, _ := json.Marshal(user)
+	fmt.Fprint(w, string(data))
+}
+
 // NewHandler
 func NewHandler() http.Handler {
 	userMap = make(map[int]*User) //init userMap
@@ -99,6 +130,7 @@ func NewHandler() http.Handler {
 	mux.HandleFunc("/user", createUserHandler).Methods("POST")
 	mux.HandleFunc("/user", userHandler).Methods("GET")
 	mux.HandleFunc("/user/{id:[0-9]+}", getUserHandler).Methods("GET")
+	mux.HandleFunc("/user", updateUserHandler).Methods("PUT")
 	mux.HandleFunc("/user/{id:[0-9]+}", deleteUserHandler).Methods("DELETE")
 
 	return mux
