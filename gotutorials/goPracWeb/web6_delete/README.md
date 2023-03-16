@@ -57,15 +57,15 @@ func TestDeleteUser(t *testing.T) {
 	// 요청 테스트시 Delete는 Go에서 기본으로 제공되지 않으므로
 	// NewRequest + DefaultClient.Do로 요청해야함
 	req, _ := http.NewRequest("DELETE", ts.URL+"/user/1", nil)
-	resp, err := http.DefaultClient.Do(req)
+	res, err := http.DefaultClient.Do(req)
 	assert.NoError(err)
-	assert.Equal(http.StatusOK, resp.StatusCode)
-	data, _ := ioutil.ReadAll(resp.Body)
+	assert.Equal(http.StatusOK, res.StatusCode)
+	data, _ := ioutil.ReadAll(res.Body)
 	assert.Contains(string(data), "No User ID : 1")
 
 	//post 한 다음 유저가 생성, 삭제 되는지 테스트
 	//1. Post 요청
-	res, err := http.Post(ts.URL+"/user", "application/json",
+	res, err = http.Post(ts.URL+"/user", "application/json",
 		strings.NewReader(`{"first_name":"jackson", "last_name":"nam", "email":"now@naver.com"}`))
 	assert.NoError(err)
 	assert.Equal(http.StatusCreated, res.StatusCode)
@@ -78,10 +78,10 @@ func TestDeleteUser(t *testing.T) {
 
 	//3. 삭제 요청 다시 날려서 삭제 확인
 	req, _ = http.NewRequest("DELETE", ts.URL+"/user/1", nil)
-	resp, err = http.DefaultClient.Do(req)
+	res, err = http.DefaultClient.Do(req)
 	assert.NoError(err)
-	assert.Equal(http.StatusOK, resp.StatusCode)
-	data, _ = ioutil.ReadAll(resp.Body)
+	assert.Equal(http.StatusOK, res.StatusCode)
+	data, _ = ioutil.ReadAll(res.Body)
 	assert.Contains(string(data), "Deleted User ID : 1")
 
 }
