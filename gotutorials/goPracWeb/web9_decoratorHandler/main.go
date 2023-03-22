@@ -1,11 +1,21 @@
 package main
 
 import (
-	"net/http" 
-	"./myapp"
-	)
+	"log"
+	"net/http"
+	"time"
 
-func NewHandler() http.Handler(){
+	"./myapp"
+)
+
+func logger(w http.ResponseWriter, r *http.Request, h http.Handler) {
+	start := time.Now()
+	log.Print("[LOOGER1] GO!")
+	h.ServeHTTP(w, r)
+	log.Print("[LOOGER1] Completed time:", time.Since(start).Milliseconds())
+}
+
+func NewHandler() http.Handler {
 	mux := myapp.NewHandler()
 	return mux
 }
