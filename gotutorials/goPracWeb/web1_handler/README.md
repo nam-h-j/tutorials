@@ -1,6 +1,6 @@
-# web1 handler
+# web1_handler
 
-## 소스코드(MUX)
+## 소스코드
 
 ### 1_NewHandler
 - myapp 패키지의 NewHttpHandler를 호출, 서버실행
