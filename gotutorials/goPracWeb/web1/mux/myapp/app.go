@@ -14,7 +14,7 @@ type User struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-func barHandler(w http.ResponseWriter, r *http.Request) {
+func userHandler(w http.ResponseWriter, r *http.Request) {
 	user := new(User)
 	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
@@ -35,6 +35,6 @@ func NewHttpHandler() http.Handler {
 		fmt.Fprint(w, "myappRootOk")
 	})
 
-	mux.HandleFunc("/user", barHandler)
+	mux.HandleFunc("/user", userHandler)
 	return mux
 }
