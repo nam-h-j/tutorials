@@ -19,12 +19,6 @@ func indexHandler(c *gin.Context) {
 }
 
 func getUserNameFromParam(c *gin.Context) {
-	// 3 way to get Query Params in GIN
-	// 1. name := c.Request.URL.Query().Get("name")
-	// or
-	// 2. name := c.Query("name")
-	// or with default values
-	// 3. name := c.DefaultQuery("name", "Guest")
 	name := c.DefaultQuery("name", "Guest")
 	c.String(http.StatusOK, "welcome %s!", name)
 }

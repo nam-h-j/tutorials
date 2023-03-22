@@ -21,8 +21,8 @@ func TestIndexHandler(t *testing.T) {
 	req := httptest.NewRequest("", "/", nil)
 
 	//2. mux에 res와 req를 넘겨준다.
-	mux := NewHttpHandler()
-	mux.ServeHTTP(res, req)
+	router := NewHttpHandler()
+	router.ServeHTTP(res, req)
 
 	//3. 테스트 결과 보기
 	//3-1 요청이 제대로 처리되었는지 확인
