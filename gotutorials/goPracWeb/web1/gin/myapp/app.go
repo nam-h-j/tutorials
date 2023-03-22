@@ -27,11 +27,11 @@ func userHandler(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, data)
 }
 
-func NewHttpHandler() {
-	serve := gin.Default()
-	serve.GET("/", func(c *gin.Context) {
+func NewHttpHandler() *gin.Engine {
+	router := gin.Default()
+	router.GET("/", func(c *gin.Context) {
 		c.String(http.StatusOK, "myappRootOk")
 	})
-	serve.GET("/user", userHandler)
-	serve.Run(":1234")
+	router.GET("/user", userHandler)
+	return router
 }

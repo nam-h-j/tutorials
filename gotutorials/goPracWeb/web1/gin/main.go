@@ -6,5 +6,5 @@ import (
 
 func main() {
 	router := myapp.NewHttpHandler()
-	router.Run(":1234")
+	router.Run("1234")
 }
