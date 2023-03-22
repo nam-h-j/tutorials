@@ -1,8 +1,7 @@
 # web1_handler
 
-## 소스코드
-
-### 1_NewHandler
+## SOURCE CODE
+### NewHandler
 - myapp 패키지의 NewHttpHandler를 호출, 서버실행
 #### GIN
 ```go
@@ -17,7 +16,7 @@ func main() {
 	http.ListenAndServe(":1234", myapp.NewHttpHandler())
 }
 ```
-### 2_NewHttpHandler
+### NewHttpHandler
 - root('/') 요청이 왔을때 "myappRootOk"를 페이지에 출력한다.
 - /user 요청이 왔을때 barHandler를 실행한다.
 #### GIN
@@ -65,7 +64,7 @@ func userHandler(c *gin.Context) {
 ```
 #### MUX
 ```go
-func barHandler(w http.ResponseWriter, r *http.Request) {
+func userHandler(w http.ResponseWriter, r *http.Request) {
 	user := new(User)
 	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {

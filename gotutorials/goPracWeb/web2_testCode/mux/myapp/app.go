@@ -1,7 +1,6 @@
 package myapp
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -26,27 +25,11 @@ func getUserNameFromParam(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "welcome %s!", name)
 }
 
-func postUserHandler(w http.ResponseWriter, r *http.Request) {
-	user := new(User)
-	err := json.NewDecoder(r.Body).Decode(user)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(w, "Bad Request: ", err)
-		return
-	}
-	user.CreatedAt = time.Now()
-	data, _ := json.Marshal(user)
-	w.Header().Add("content-type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	fmt.Fprint(w, string(data))
-}
-
 func NewHttpHandler() http.Handler {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", indexHandler)
-	mux.HandleFunc("/userName", getUserNameFromParam)
-	mux.HandleFunc("/user", postUserHandler)
+	mux.HandleFunc("/user", getUserNameFromParam)
 
 	return mux
 }
