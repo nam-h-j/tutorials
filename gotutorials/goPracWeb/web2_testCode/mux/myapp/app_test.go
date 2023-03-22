@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestIndexPathHandler(t *testing.T) {
+func TestIndexHandler(t *testing.T) {
 	//assert 생성
 	assert := assert.New(t)
 
@@ -33,21 +33,15 @@ func TestIndexPathHandler(t *testing.T) {
 }
 
 func TestGetUserNameFromParam_WithoutParam(t *testing.T) {
-	//assert 생성
 	assert := assert.New(t)
 
-	//1. 테스트 할 req와 res를 작성해준다.
 	res := httptest.NewRecorder()
-	req := httptest.NewRequest("GET", "/userName", nil)
+	req := httptest.NewRequest("GET", "/user", nil)
 
-	//2. mux에 res와 req를 넘겨준다.
-	mux := NewHttpHandler()
-	mux.ServeHTTP(res, req)
-
-	//3. 테스트 결과 보기
-	//3-1 요청이 제대로 갔는지 확인
+	router := NewHttpHandler()
+	router.ServeHTTP(res, req)
 	assert.Equal(http.StatusOK, res.Code)
-	//3-2 바디의 내용이 제대로 나왔는지 확인
+
 	data, _ := ioutil.ReadAll(res.Body)
 	assert.Equal("welcome unknown!", string(data))
 }
@@ -55,22 +49,15 @@ func TestGetUserNameFromParam_WithoutParam(t *testing.T) {
 func TestGetUserNameFromParam_WithParam(t *testing.T) {
 	assert := assert.New(t)
 
-	//1. 테스트 할 req와 res를 작성해준다.
 	mockName := "Randy"
-	param := fmt.Sprintf("/userName?name=%s", mockName)
+	param := fmt.Sprintf("/user?name=%s", mockName)
 	res := httptest.NewRecorder()
 	req := httptest.NewRequest("GET", param, nil)
 
-	//2. mux에 res와 req를 넘겨준다.
-	mux := NewHttpHandler()
-	mux.ServeHTTP(res, req)
-
-	//3. 테스트 결과 보기
-
-	//3-1 요청이 제대로 갔는지 확인
+	router := NewHttpHandler()
+	router.ServeHTTP(res, req)
 	assert.Equal(http.StatusOK, res.Code)
 
-	//3-2 바디의 내용이 제대로 나왔는지 확인
 	data, _ := ioutil.ReadAll(res.Body)
 	resultStr := fmt.Sprintf("welcome %s!", mockName)
 	assert.Equal(resultStr, string(data))
