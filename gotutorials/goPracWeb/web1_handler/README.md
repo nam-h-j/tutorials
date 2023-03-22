@@ -46,11 +46,9 @@ func NewHttpHandler() http.Handler {
 }
 ```
 ### 3_userHandler
-- user객체가 response로 넘어오면 go객체로 언마샬링 한다
-	- 마샬링 : GO -> JSON
-	- 언마샬링 : JSON -> GO
+- user객체가 response로 넘어오면 JSON string을 go 객체로 디코딩 한다
 - 유저 정보가 없으면 BadReq를 출력
-- 유저 정보가 있으면 마샬링후 화면에 데이터 프린트
+- 유저 정보가 있으면 User Struct를 마샬링후 화면에 데이터 출력
 #### GIN
 ```go
 func userHandler(c *gin.Context) {
