@@ -1,79 +1,84 @@
-# web5 post와 post테스트
+# web5_ㅔㅐㄴㅅ
 
-## 소스코드내용
-### 1_NewHandler
-- userMap과 lastID를 초기화
-- getUserHandler를 호출
+## SOURCE CODE
+### NewHandler
+- 요청 핸들러 등록
+#### GIN
 ```go
-func NewHandler() http.Handler {
-	userMap = make(map[int]*User) //init userMap
-	lastID = 0 //user Idx
-	mux := mux.NewRouter()
-
-    ...
-	mux.HandleFunc("/user/{id:[0-9]+}", getUserHandler).Methods("GET")
+func NewHandler() *gin.Engine {
+	router := gin.Default()
 	...
-
-    return mux
+	router.POST("/user", createUserHandler)
+	...
+	return router
 }
 ```
-
-### 2_getUserHandler
-- getUserHandler의 요청파라미터인 id를 취득
-- 스트링 형태인 id를 int로 변환
-- 만약 요청파라이터에 id가 없다면, 또는 잘못된 형식이라면 StatusBadRequest와 err 내용을 출력하고 리턴
-- user Map에 요청한 id가 있는지 체크
-- 만약 요청한 id가 없다면 No User ID : ${id} 메시지 출력
-- 만약 요청한 id가 있으면 해당 유저의 정보를 출력한다.
+#### MUX
 ```go
-func getUserHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
+func NewHandler() http.Handler {
+	mux := mux.NewRouter()
+	...
+	mux.HandleFunc("/user", createUserHandler).Methods("POST")
+	...
+	return mux
+}
+```
+### createUserHandler
+#### GIN
+- 유저객체를 생성
+- body에 넘어온 json 스트링을 디코드
+- 값이 없으면 에러처리
+- 객체에 값 할당
+- 값이 할당된 객체를 마샬링하고 출력
+```go
+func createUserHandler(c *gin.Context) {
+	user := new(User) // create User struct
+	err := json.NewDecoder(c.Request.Body).Decode(user)
+	if err != nil {
+		c.String(http.StatusOK, err.Error())
+		return
+	}
+
+	// Created User
+	lastID++
+	user.ID = lastID
+	user.CreatedAt = time.Now()
+	userMap[user.ID] = user
+
+	c.Writer.Header().Set("Content-Type", "application/json")
+	data, _ := json.Marshal(user) // 마샬링, 논리적 구조를 로우바이트로 변경하는 것(인코딩)
+	c.String(http.StatusCreated, string(data))
+}
+```
+#### MUX
+```go
+func createUserHandler(w http.ResponseWriter, r *http.Request) {
+	user := new(User) // create User struct
+	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprint(w, err)
 		return
 	}
-	user, ok := userMap[id]
-	if !ok {
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, "No User ID : ", id)
-	}
+
+	// Created User
+	lastID++
+	user.ID = lastID
+	user.CreatedAt = time.Now()
+	userMap[user.ID] = user
 
 	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	data, _ := json.Marshal(user)
+	w.WriteHeader(http.StatusCreated)
+	data, _ := json.Marshal(user) // 마샬링, 논리적 구조를 로우바이트로 변경하는 것(인코딩)
 	fmt.Fprint(w, string(data))
 }
 ```
-***
-
-## 테스트코드
-### 1_TestGetUser
-- 존재하지 않는 유저 idx를 요청
-- No User ID : ${idx}를 출력
-```go
-func TestGetUser(t *testing.T) {
-	assert := assert.New(t)
-
-	ts := httptest.NewServer(NewHandler())
-	defer ts.Close()
-
-	res, err := http.Get(ts.URL + "/user/89")
-	assert.NoError(err)
-	assert.Equal(http.StatusOK, res.StatusCode)
-	data, _ := ioutil.ReadAll(res.Body)
-	assert.Contains(string(data), "No User ID : 89")
-}
-```
-### 2_TestPostUser
-- 새로운 유저를 post 요청
-- post요청의 response 된 유저 id 값이 0이 아닌지 확인
-- post한 유저 정보가 정상적으로 get되는지 확인
-    - post 요청에서 받은 user.ID 값으로 get요청을 하기 위해서 int에서 string으로 캐스팅
-    - get 요청이 정상인지 확인
-    - get 으로 넘어온 데이터가 post resp 값과 같은지 비교
-
+## TEST CODE
+### TestPostUser
+- POST 요청을 보냄, 바디에 테스트용 json 스트링을 같이 보냄
+- POST가 성공적으로 진행되었는지 확인
+- POST된 데이터 확인을 위해 POST한 id로 GET요청 보냄
+- GET 요청 바디로 넘어온 데이터가 맞는지 확인
 ```go
 func TestPostUser(t *testing.T) {
 	assert := assert.New(t)
