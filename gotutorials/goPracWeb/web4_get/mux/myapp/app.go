@@ -20,12 +20,12 @@ func getUserHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "user id: ", vars["id"])
 }
 
-// NewHandler
 func NewHandler() http.Handler {
 	mux := mux.NewRouter()
 
 	mux.HandleFunc("/", indexHandler)
 	mux.HandleFunc("/user", userHandler)
 	mux.HandleFunc("/user/{id:[0-9]+}", getUserHandler)
+
 	return mux
 }
