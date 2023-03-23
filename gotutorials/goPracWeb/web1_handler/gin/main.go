@@ -5,6 +5,5 @@ import (
 )
 
 func main() {
-	router := myapp.NewHttpHandler()
-	router.Run("1234")
+	myapp.NewHttpHandler().Run("1234")
 }

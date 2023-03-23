@@ -39,7 +39,7 @@ func TestUser(t *testing.T) {
 	assert.Contains(string(data), "user, get user info : ")
 }
 
-func testGetUser(t *testing.T) {
+func TestGetUser(t *testing.T) {
 	assert := assert.New(t)
 
 	ts := httptest.NewServer(NewHandler())
@@ -57,5 +57,5 @@ func testGetUser(t *testing.T) {
 	assert.Equal(http.StatusOK, res.StatusCode)
 
 	data, _ = ioutil.ReadAll(res.Body)
-	assert.Equal(string(data), "user id: 89")
+	assert.Equal(string(data), "user id: 100")
 }

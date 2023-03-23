@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	myapp.NewHttpHandler().Run(":1234")
+	myapp.NewHandler().Run(":1234")
 }
