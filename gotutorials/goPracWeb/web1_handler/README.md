@@ -3,13 +3,6 @@
 ## SOURCE CODE
 ### NewHandler
 - myapp 패키지의 NewHttpHandler를 호출, 서버실행
-#### GIN
-```go
-func main() {
-	myapp.NewHttpHandler().Run("1234")
-}
-```
-#### MUX
 ```go
 func main() {
 	http.ListenAndServe(":1234", myapp.NewHttpHandler())
