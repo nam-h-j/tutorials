@@ -15,15 +15,13 @@ import (
 func TestIndex(t *testing.T) {
 	assert := assert.New(t)
 
-	ts := httptest.NewServer(NewHandler()) // 목업 서버 열기
-	defer ts.Close()                       // 목업 서버 닫기
+	ts := httptest.NewServer(NewHandler())
+	defer ts.Close()
 
-	// 요청테스트
 	res, err := http.Get(ts.URL)
 	assert.NoError(err)
 	assert.Equal(http.StatusOK, res.StatusCode)
 
-	// 출력테스트
 	data, _ := ioutil.ReadAll(res.Body)
 	assert.Equal("this is index", string(data))
 }
