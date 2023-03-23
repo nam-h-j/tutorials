@@ -1,9 +1,11 @@
 package main
 
 import (
+	"net/http"
+
 	"./myapp"
 )
 
 func main() {
-	myapp.NewHttpHandler().Run("1234")
+	http.ListenAndServe(":1234", myapp.NewHttpHandler())
 }
