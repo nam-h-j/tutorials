@@ -2,12 +2,11 @@ package myapp
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 )
 
 type User struct {
@@ -21,40 +20,35 @@ type User struct {
 var userMap map[int]*User
 var lastID int
 
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "this is index")
+func indexHandler(c *gin.Context) {
+	c.String(http.StatusOK, "this is index")
 }
 
-func userHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "user, get user info : /user/{id}")
+func userHandler(c *gin.Context) {
+	c.String(http.StatusOK, "user, get user info : /user/{id}")
 }
 
-func getUserHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
+func getUserHandler(c *gin.Context) {
+	idStr, _ := c.Params.Get("id")
+	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(w, err)
+		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
 	user, ok := userMap[id]
 	if !ok {
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, "No User ID : ", id)
+		c.String(http.StatusOK, "No User ID : %v", id)
 	}
-
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
+	c.Writer.Header().Set("Content-Type", "application/json")
 	data, _ := json.Marshal(user)
-	fmt.Fprint(w, string(data))
+	c.String(http.StatusOK, string(data))
 }
 
-func createUserHandler(w http.ResponseWriter, r *http.Request) {
+func createUserHandler(c *gin.Context) {
 	user := new(User) // create User struct
-	err := json.NewDecoder(r.Body).Decode(user)
+	err := json.NewDecoder(c.Request.Body).Decode(user)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(w, err)
+		c.String(http.StatusOK, err.Error())
 		return
 	}
 
@@ -64,21 +58,21 @@ func createUserHandler(w http.ResponseWriter, r *http.Request) {
 	user.CreatedAt = time.Now()
 	userMap[user.ID] = user
 
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
+	c.Writer.Header().Set("Content-Type", "application/json")
 	data, _ := json.Marshal(user) // 마샬링, 논리적 구조를 로우바이트로 변경하는 것(인코딩)
-	fmt.Fprint(w, string(data))
+	c.String(http.StatusCreated, string(data))
 }
 
 // NewHandler
-func NewHandler() http.Handler {
+func NewHandler() *gin.Engine {
 	userMap = make(map[int]*User) //init userMap
 	lastID = 0
-	mux := mux.NewRouter()
+	router := gin.Default()
 
-	mux.HandleFunc("/", indexHandler)
-	mux.HandleFunc("/user/{id:[0-9]+}", getUserHandler).Methods("GET")
-	mux.HandleFunc("/user", userHandler).Methods("GET")
-	mux.HandleFunc("/user", createUserHandler).Methods("POST")
-	return mux
+	router.GET("/", indexHandler)
+	router.GET("/user", userHandler)
+	router.GET("/user/:id", getUserHandler)
+	router.POST("/user", createUserHandler)
+
+	return router
 }
