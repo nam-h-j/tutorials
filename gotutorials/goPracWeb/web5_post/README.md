@@ -1,4 +1,4 @@
-# web5_ㅔㅐㄴㅅ
+# web5_post
 
 ## SOURCE CODE
 ### NewHandler
@@ -24,12 +24,12 @@ func NewHandler() http.Handler {
 }
 ```
 ### createUserHandler
-#### GIN
 - 유저객체를 생성
 - body에 넘어온 json 스트링을 디코드
 - 값이 없으면 에러처리
 - 객체에 값 할당
 - 값이 할당된 객체를 마샬링하고 출력
+#### GIN
 ```go
 func createUserHandler(c *gin.Context) {
 	user := new(User) // create User struct
