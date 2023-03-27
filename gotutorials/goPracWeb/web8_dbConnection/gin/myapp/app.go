@@ -1,9 +1,7 @@
 package myapp
 
 import (
-	"database/sql"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -109,24 +107,13 @@ func updateUserHandler(c *gin.Context) {
 	data, _ := json.Marshal(user)
 	c.String(http.StatusOK, string(data))
 }
-func dbConnection() {
-	// Create the database handle, confirm driver is present
-	db, _ := sql.Open("mysql", "dellis:@/shud")
-	defer db.Close()
-
-	// Connect and check the server version
-	var version string
-	db.QueryRow("SELECT VERSION()").Scan(&version)
-	fmt.Println("Connected to:", version)
-}
 
 // NewHandler
 func NewHandler() *gin.Engine {
 	userMap = make(map[int]*User) //init userMap
 	lastID = 0
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
-
-	dbConnection()
 
 	router.GET("/", indexHandler)
 	router.GET("/user", userHandler)
