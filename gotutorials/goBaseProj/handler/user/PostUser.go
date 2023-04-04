@@ -11,14 +11,16 @@ import (
 )
 
 func PostUser(c *gin.Context) {
-	paramUser := model.User{}
-
+	reqBodyUser := model.User{}
+	
+	// 미들웨어의 디비풀로 연결
 	db, ok := c.MustGet("databaseConn").(*sql.DB)
 	if !ok {
 		panic(ok)
 	}
 
-	if error := c.BindJSON(&paramUser); error != nil {
+	// 유저 객체 
+	if error := c.BindJSON(&reqBodyUser); error != nil {
 		return
 	}
 
@@ -28,8 +30,10 @@ func PostUser(c *gin.Context) {
 	// 	return
 	// }
 
+	// userService 호출
 	userService := service.UserService{db}
-	insertRes := userService.PostUser(paramUser)
+	// 쿼리날리기
+	insertRes := userService.PostUser(reqBodyUser)
 
 	// 정상적인 INSERT 아니면 상태를 RETURN
 	if insertRes.Status != http.StatusOK {
