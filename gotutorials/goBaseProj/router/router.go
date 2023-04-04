@@ -15,20 +15,20 @@ func Router(db *sql.DB) *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 
-	// 데이터베이스 풀 커넥션 재사용
+	// 라우터에서 디비 미들웨어를 통해 디비 풀을 재사용 하도록 함
 	router.Use(middleware.MiddleDB(db))
 
 	// index
 	// router.GET("/", indexHandler)
 
 	userRouter := router.Group("user")
-	userRouter.POST("/post", user.PostUser)
-
-	// userRouter.GET("/user", user.PostUser)
-	// router.GET("/user/:id", getUserHandler)
+	userRouter.GET("/", user.GetUserList)
+	userRouter.GET("/:id", user.GetUser)
+	userRouter.POST("/", user.PostUser)
+	userRouter.DELETE("/:id", user.DeleteUser)
 	// router.POST("/user", createUserHandler)
 	// router.PUT("/user", updateUserHandler)
-	// router.DELETE("/user/:id", deleteUserHandler)
+
 
 	return router
 }
