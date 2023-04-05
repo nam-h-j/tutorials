@@ -14,48 +14,6 @@ type UserService struct {
 	DB *sql.DB
 }
 
-// 등록
-func (self UserService) PostUser(param model.User) model.UserResult {
-	result := model.UserResult{}
-
-	// 1. 정산 정보 등록
-	sql := fmt.Sprintf("INSERT INTO user( id, f_name, l_name, email, created_at) VALUES(%s, '%s', '%s', '%s', now());",
-		strconv.Itoa(param.ID),
-		param.FirstName,
-		param.LastName,
-		param.Email)
-
-	log.Print("▶ UserService : Insert : sql : ")
-	log.Println(sql)
-
-	res, postErr := self.DB.Exec(sql)
-
-	if postErr != nil {
-		result.Status = http.StatusInternalServerError
-		result.Message = "정산 정보 등록에 실패하였습니다."
-		result.Cmd = "INSERT"
-		return result
-	}
-
-	// 등록된 정산정보의 srl값 받아오기
-	lastInsertId, getSrlerr := res.LastInsertId()
-	if getSrlerr != nil {
-		result.Status = http.StatusInternalServerError
-		result.Message = "정산 정보 등록에 실패하였습니다."
-		result.Cmd = "INSERT"
-		return result
-	}
-
-	result.Status = http.StatusOK
-	//result.Message = "정산 정보 등록에 성공하였습니다."
-	result.Message = strconv.FormatInt(lastInsertId, 10)
-	result.Cmd = "INSERT"
-
-	log.Println("정보 등록에 성공하였습니다.", lastInsertId)
-
-	return result
-}
-
 // 목록가져오기
 func  (self UserService) GetUserList() model.UserListResult {
 	result := model.UserListResult{}
@@ -135,6 +93,82 @@ func  (self UserService) GetUser(userId string) model.UserResult {
 	return result
 }
 
+// 등록
+func (self UserService) PostUser(body model.User) model.UserResult {
+	result := model.UserResult{}
+
+	sql := fmt.Sprintf("INSERT INTO user( id, f_name, l_name, email, created_at) VALUES(%s, '%s', '%s', '%s', now());",
+		strconv.Itoa(body.ID),
+		body.FirstName,
+		body.LastName,
+		body.Email)
+
+
+	res, postErr := self.DB.Exec(sql)
+
+	if postErr != nil {
+		result.Status = http.StatusInternalServerError
+		result.Message = "정보 등록 실패"
+		result.Cmd = "INSERT"
+		return result
+	}
+
+	// 등록된 정산정보의 srl값 받아오기
+	lastInsertId, getSrlerr := res.LastInsertId()
+	if getSrlerr != nil {
+		result.Status = http.StatusInternalServerError
+		result.Message = "정보 등록 실패"
+		result.Cmd = "INSERT"
+		return result
+	}
+
+	result.Status = http.StatusOK
+	result.Message = strconv.FormatInt(lastInsertId, 10)
+	result.Cmd = "INSERT"
+
+	log.Println("정보 등록 성공", lastInsertId)
+
+	return result
+}
+
+// 업데이트
+func (self UserService) PutUser(body model.User) model.UserResult {
+	result := model.UserResult{}
+
+	// 1. 정산 정보 등록
+	sql := fmt.Sprintf("UPDATE user SET f_name = '%s', l_name = '%s' WHERE id = %s",
+		body.FirstName,
+		body.LastName,
+		strconv.Itoa(body.ID))
+
+	res, putErr := self.DB.Exec(sql)
+
+	if putErr != nil {
+		result.Status = http.StatusInternalServerError
+		result.Message = "정보 갱신 실패"
+		result.Cmd = "UPDATE"
+		return result
+	}
+
+	// 등록된 정산정보의 srl값 받아오기
+	lastInsertId, getSrlerr := res.LastInsertId()
+	if getSrlerr != nil {
+		result.Status = http.StatusInternalServerError
+		result.Message = "정보 갱신 실패"
+		result.Cmd = "UPDATE"
+		return result
+	}
+
+	result.Status = http.StatusOK
+	//result.Message = "정산 정보 등록에 성공하였습니다."
+	result.Message = strconv.FormatInt(lastInsertId, 10)
+	result.Cmd = "INSERT"
+
+	log.Println("정보 등록에 성공하였습니다.", lastInsertId)
+
+	return result
+}
+
 // 단일 유저 삭제
 func  (self UserService) DeleteUser(userId string) model.UserResult {
 	result := model.UserResult{}
@@ -150,11 +184,10 @@ func  (self UserService) DeleteUser(userId string) model.UserResult {
 
 		return result
 	}
-
-	sql = fmt.Sprintf("Delete FROM user WHERE id = %s", result.UserData.ID)
+	sql = fmt.Sprintf("Delete FROM user WHERE id = %d", result.UserData.ID)
 	_, delErr := self.DB.Query(sql)
 
-	if err != nil {
+	if delErr != nil {
 		log.Println(delErr)
 
 		result.Status = http.StatusBadRequest
@@ -164,7 +197,6 @@ func  (self UserService) DeleteUser(userId string) model.UserResult {
 		return result
 	}
 	
-
 	result.Status = http.StatusOK
 	result.Message = "회원 삭제 성공"
 	result.Cmd = "DELETE"
