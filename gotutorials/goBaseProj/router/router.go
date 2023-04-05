@@ -26,7 +26,7 @@ func Router(db *sql.DB) *gin.Engine {
 	userRouter.GET("/:id", user.GetUser)
 	userRouter.POST("/", user.PostUser)
 	userRouter.DELETE("/:id", user.DeleteUser)
-	// router.POST("/user", createUserHandler)
+	userRouter.PUT("/", user.PutUser)
 	// router.PUT("/user", updateUserHandler)
 
 
