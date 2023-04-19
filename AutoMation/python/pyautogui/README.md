@@ -16,11 +16,11 @@ print(pag.size()) # will shows your device monitor resolution
 ```
 
 
-## mouse controlls
-### moveTo
+## mouse functions 마우스 제어
+### 커서위치이동
 ```pyton
-# will moves your mouse pointer located in your monitor x=500, y=540
-pag.moveTo(500, 540)
+>>> pyautogui.moveTo(x, y, duration=num_seconds)  # move mouse to XY coordinates over num_second seconds
+>>> pyautogui.moveRel(xOffset, yOffset, duration=num_seconds)  # move mouse relative to its current position
 ```
 ### click
 ```pyton
