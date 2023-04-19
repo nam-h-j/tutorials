@@ -11,5 +11,18 @@ pip install pyautogui
 import pyautogui
 
 pag = pyautogui
-print(pag.size()) # will shows your device monitor width and height value
+
+print(pag.size()) # will shows your device monitor resolution
+```
+
+
+## mouse controlls
+### moveTo
+```pyton
+# will moves your mouse pointer located in your monitor x=500, y=540
+pag.moveTo(500, 540)
+```
+### click
+```pyton
+pag.click()
 ```
