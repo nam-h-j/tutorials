@@ -17,6 +17,14 @@ type UserService struct {
 // 목록가져오기
 func  (self UserService) GetUserList() model.UserListResult {
 	result := model.UserListResult{}
+	getUserListQuery := "SELECT id, f_name, l_name, email, created_at FROM user" 
+	getUserListStmt, err := self.DB.Prepare(getUserListQuery)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer getUserListStmt.Close()
+
 	sql := fmt.Sprintf("SELECT id, f_name, l_name, email, created_at FROM user")
 
 	rows, err := self.DB.Query(sql)
