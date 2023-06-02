@@ -17,17 +17,25 @@ type UserService struct {
 // 목록가져오기
 func  (self UserService) GetUserList() model.UserListResult {
 	result := model.UserListResult{}
+	
+	// prepared statements
 	getUserListQuery := "SELECT id, f_name, l_name, email, created_at FROM user" 
 	getUserListStmt, err := self.DB.Prepare(getUserListQuery)
 	if err != nil {
 		fmt.Println(err)
-		return
+		return result
 	}
 	defer getUserListStmt.Close()
 
-	sql := fmt.Sprintf("SELECT id, f_name, l_name, email, created_at FROM user")
 
-	rows, err := self.DB.Query(sql)
+	// run query
+	rows, err := getUserListStmt.Query()
+	if err != nil {
+		fmt.Println(err)
+		return result
+	}
+	defer rows.Close()
+	
 
 	for rows.Next() {
 		tmp_item := model.User{}
@@ -105,23 +113,24 @@ func  (self UserService) GetUser(userId string) model.UserResult {
 func (self UserService) PostUser(body model.User) model.UserResult {
 	result := model.UserResult{}
 
-	sql := fmt.Sprintf("INSERT INTO user( id, f_name, l_name, email, created_at) VALUES(%s, '%s', '%s', '%s', now());",
-		strconv.Itoa(body.ID),
-		body.FirstName,
-		body.LastName,
-		body.Email)
+	postUserQuery := "INSERT INTO user( id, f_name, l_name, email, created_at) VALUES(?, ?, ?, ?, now());"
+	postUserStmt, err := self.DB.Prepare(postUserQuery)
+	if err != nil {
+		fmt.Println(err)
+		return result
+	}
+	defer postUserStmt.Close()
 
-
-	res, postErr := self.DB.Exec(sql)
-
-	if postErr != nil {
+	// post 요청하기
+	res, err := postUserStmt.Exec(strconv.Itoa(body.ID), body.FirstName, body.LastName, body.Email)
+	if err != nil {
 		result.Status = http.StatusInternalServerError
 		result.Message = "정보 등록 실패"
 		result.Cmd = "INSERT"
 		return result
 	}
 
-	// 등록된 정산정보의 srl값 받아오기
+	// 등록된 정보의 srl값 및 아이디 받아오기
 	lastInsertId, getSrlerr := res.LastInsertId()
 	if getSrlerr != nil {
 		result.Status = http.StatusInternalServerError
@@ -143,15 +152,17 @@ func (self UserService) PostUser(body model.User) model.UserResult {
 func (self UserService) PutUser(body model.User) model.UserResult {
 	result := model.UserResult{}
 
-	// 1. 정산 정보 등록
-	sql := fmt.Sprintf("UPDATE user SET f_name = '%s', l_name = '%s' WHERE id = %s",
-		body.FirstName,
-		body.LastName,
-		strconv.Itoa(body.ID))
+	putUserQuery := "UPDATE user SET f_name = '?', l_name = '?' WHERE id = ?"
+		putUserStmt, err := self.DB.Prepare(putUserQuery)
+	if err != nil {
+		fmt.Println(err)
+		return result
+	}
+	defer putUserStmt.Close()
 
-	res, putErr := self.DB.Exec(sql)
-
-	if putErr != nil {
+	// post 요청하기
+	res, err := putUserStmt.Exec(body.FirstName, body.LastName, strconv.Itoa(body.ID))
+	if err != nil {
 		result.Status = http.StatusInternalServerError
 		result.Message = "정보 갱신 실패"
 		result.Cmd = "UPDATE"
