@@ -12,7 +12,6 @@ import (
 func Router(db *sql.DB) *gin.Engine {
 	// userMap = make(map[int]*User) //init userMap
 	// lastID = 0
-	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 
 	// 라우터에서 디비 미들웨어를 통해 디비 풀을 재사용 하도록 함
@@ -28,7 +27,6 @@ func Router(db *sql.DB) *gin.Engine {
 	userRouter.DELETE("/:id", user.DeleteUser)
 	userRouter.PUT("/", user.PutUser)
 	// router.PUT("/user", updateUserHandler)
-
 
 	return router
 }

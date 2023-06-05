@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetUser(c *gin.Context){
+func GetUser(c *gin.Context) {
 	userId := c.Param("id")
 
 	db, ok := c.MustGet("databaseConn").(*sql.DB)
@@ -20,5 +20,7 @@ func GetUser(c *gin.Context){
 
 	resp := model.UserResult{}
 	resp = userService.GetUser(userId)
+
+	c.Header("Content-Type", "application/json")
 	c.JSON(resp.Status, resp)
 }
