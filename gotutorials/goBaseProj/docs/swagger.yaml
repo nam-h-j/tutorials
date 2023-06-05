@@ -1,4 +1,42 @@
+definitions:
+  router.welcomeModel:
+    properties:
+      id:
+        example: 1
+        format: int64
+        type: integer
+      name:
+        example: account name
+        type: string
+    type: object
 info:
   contact: {}
-paths: {}
+  description: GO BASE PROJ API
+  title: GO BASE PROJ
+  version: "1.0"
+paths:
+  /welcome/{name}:
+    get:
+      consumes:
+      - application/json
+      description: 스웨거 테스트용 핸들러 Desc
+      parameters:
+      - description: User name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/router.welcomeModel'
+      summary: 스웨거 테스트용 핸들러
+securityDefinitions:
+  user-token:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

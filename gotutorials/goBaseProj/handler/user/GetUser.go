@@ -3,8 +3,8 @@ package user
 import (
 	"database/sql"
 
-	"../../model"
-	"./service"
+	"goBaseProj/handler/user/service"
+	"goBaseProj/model"
 
 	"github.com/gin-gonic/gin"
 )

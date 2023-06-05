@@ -4,22 +4,22 @@ import (
 	"database/sql"
 	"net/http"
 
-	"../../model"
-	"./service"
+	"goBaseProj/handler/user/service"
+	"goBaseProj/model"
 
 	"github.com/gin-gonic/gin"
 )
 
 func PostUser(c *gin.Context) {
 	resBody := model.User{}
-	
+
 	// 미들웨어의 디비풀로 연결
 	db, ok := c.MustGet("databaseConn").(*sql.DB)
 	if !ok {
 		panic(ok)
 	}
 
-	// 유저 객체 
+	// 유저 객체
 	if error := c.BindJSON(&resBody); error != nil {
 		return
 	}
