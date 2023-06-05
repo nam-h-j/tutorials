@@ -3,18 +3,24 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"goBaseProj/router"
 	"log"
+	"net/http"
 	"os"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-sql-driver/mysql"
 	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/joho/godotenv"
-
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 )
+
+// @title     GO BASE PROJ
+// @version         1.0
+// @description     GO BASE PROJ API
+
+// @securityDefinitions.apikey user-token
+// @in header
+// @name Authorization
 
 func main() {
 	err := godotenv.Load(".env")
@@ -41,17 +47,10 @@ func main() {
 	// 디비 연결 확인
 	var version string
 	db.QueryRow("SELECT VERSION()").Scan(&version)
-	fmt.Println("Connected to mysql version: ", version)
-
-	router := gin.Default()
-
-	gin.SetMode(gin.ReleaseMode)
-
-	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	fmt.Println("Connected to mysql version:", version)
 
 	// r := router.Router(db)
+	// router.Run(":1234")
 
-	// r.Run(":1234")
-
-	// http.ListenAndServe(":1234", router.Router(db))
+	http.ListenAndServe(":1234", router.Router(db))
 }
