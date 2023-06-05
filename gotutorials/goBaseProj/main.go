@@ -4,15 +4,16 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 
-	"./router"
-
+	"github.com/gin-gonic/gin"
 	"github.com/go-sql-driver/mysql"
 	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/joho/godotenv"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func main() {
@@ -42,11 +43,15 @@ func main() {
 	db.QueryRow("SELECT VERSION()").Scan(&version)
 	fmt.Println("Connected to mysql version: ", version)
 
-	// r := router.Router(db)
+	router := gin.Default()
 
-	// gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.ReleaseMode)
+
+	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	// r := router.Router(db)
 
 	// r.Run(":1234")
 
-	http.ListenAndServe(":1234", router.Router(db))
+	// http.ListenAndServe(":1234", router.Router(db))
 }

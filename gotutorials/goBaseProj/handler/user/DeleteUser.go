@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func DeleteUser(c *gin.Context){
+func DeleteUser(c *gin.Context) {
 	userId := c.Param("id")
 
 	db, ok := c.MustGet("databaseConn").(*sql.DB)
@@ -20,6 +20,6 @@ func DeleteUser(c *gin.Context){
 
 	resp := model.UserResult{}
 	resp = userService.DeleteUser(userId)
-	
+
 	c.JSON(resp.Status, resp)
 }
