@@ -15,18 +15,20 @@ type UserService struct {
 }
 
 // 목록가져오기
-func  (self UserService) GetUserList() model.UserListResult {
+func (self UserService) GetUserList() model.UserListResult {
 	result := model.UserListResult{}
-	
+
 	// prepared statements
-	getUserListQuery := "SELECT id, f_name, l_name, email, created_at FROM user" 
+	getUserListQuery := "SELECT id, f_name, l_name, email, created_at FROM user"
 	getUserListStmt, err := self.DB.Prepare(getUserListQuery)
 	if err != nil {
 		fmt.Println(err)
+		result.Status = http.StatusInternalServerError
+		result.Message = "내부 서버 오류"
+		result.Cmd = "ERROR"
 		return result
 	}
 	defer getUserListStmt.Close()
-
 
 	// run query
 	rows, err := getUserListStmt.Query()
@@ -35,7 +37,6 @@ func  (self UserService) GetUserList() model.UserListResult {
 		return result
 	}
 	defer rows.Close()
-	
 
 	for rows.Next() {
 		tmp_item := model.User{}
@@ -70,37 +71,76 @@ func  (self UserService) GetUserList() model.UserListResult {
 }
 
 // 단일 유저 취득
-func  (self UserService) GetUser(userId string) model.UserResult {
+func (self UserService) GetUser(userId string) model.UserResult {
 	result := model.UserResult{}
-	sql := fmt.Sprintf("SELECT id, f_name, l_name, email, created_at FROM user WHERE id = %s", userId)
 
-	rows, err := self.DB.Query(sql)
-
-	for rows.Next() {
-		tmp_item := model.User{}
-		err := rows.Scan(
-			&tmp_item.ID,
-			&tmp_item.FirstName,
-			&tmp_item.LastName,
-			&tmp_item.Email,
-			&tmp_item.CreatedAt,
-		)
-		if err != nil {
-			log.Fatal(err)
-		}
-		result.UserData = tmp_item
-	}
-	
-	// 일치하는 정보 없음
+	getUserQuery := "SELECT id, f_name, l_name, email, created_at FROM user WHERE id = ?"
+	getUserStmt, err := self.DB.Prepare(getUserQuery)
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
+		result.Status = http.StatusInternalServerError
+		result.Message = "내부 서버 오류"
+		result.Cmd = "ERROR"
+		return result
+	}
+	defer getUserStmt.Close()
 
+	rows, err := getUserStmt.Query(userId)
+	if err != nil {
+		fmt.Println(err)
+		result.Status = http.StatusInternalServerError
+		result.Message = "내부 서버 오류"
+		result.Cmd = "ERROR"
+		return result
+	}
+	defer rows.Close()
+
+	if !rows.Next() { // 결과가 없는 경우
 		result.Status = http.StatusNoContent
 		result.Message = "등록된 회원 정보가 없습니다."
 		result.Cmd = "SELECT"
-
+		result.UserData = model.User{}
 		return result
 	}
+	tmp_item := model.User{}
+	err = rows.Scan(
+		&tmp_item.ID,
+		&tmp_item.FirstName,
+		&tmp_item.LastName,
+		&tmp_item.Email,
+		&tmp_item.CreatedAt,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+	result.UserData = tmp_item
+
+	// for rows.Next() {
+	// 	tmp_item := model.User{}
+	// 	err := rows.Scan(
+	// 		&tmp_item.ID,
+	// 		&tmp_item.FirstName,
+	// 		&tmp_item.LastName,
+	// 		&tmp_item.Email,
+	// 		&tmp_item.CreatedAt,
+	// 	)
+	// 	fmt.Println(tmp_item.ID)
+	// 	if err != nil {
+	// 		log.Fatal(err)
+	// 	}
+	// 	result.UserData = tmp_item
+	// }
+
+	// // 일치하는 정보 없음
+	// if err != nil {
+	// 	log.Println(err)
+
+	// 	result.Status = http.StatusNoContent
+	// 	result.Message = "등록된 회원 정보가 없습니다."
+	// 	result.Cmd = "SELECT"
+
+	// 	return result
+	// }
 
 	result.Status = http.StatusOK
 	result.Message = "success"
@@ -117,6 +157,9 @@ func (self UserService) PostUser(body model.User) model.UserResult {
 	postUserStmt, err := self.DB.Prepare(postUserQuery)
 	if err != nil {
 		fmt.Println(err)
+		result.Status = http.StatusInternalServerError
+		result.Message = "내부 서버 오류"
+		result.Cmd = "ERROR"
 		return result
 	}
 	defer postUserStmt.Close()
@@ -153,9 +196,12 @@ func (self UserService) PutUser(body model.User) model.UserResult {
 	result := model.UserResult{}
 
 	putUserQuery := "UPDATE user SET f_name = '?', l_name = '?' WHERE id = ?"
-		putUserStmt, err := self.DB.Prepare(putUserQuery)
+	putUserStmt, err := self.DB.Prepare(putUserQuery)
 	if err != nil {
 		fmt.Println(err)
+		result.Status = http.StatusInternalServerError
+		result.Message = "내부 서버 오류"
+		result.Cmd = "ERROR"
 		return result
 	}
 	defer putUserStmt.Close()
@@ -189,33 +235,51 @@ func (self UserService) PutUser(body model.User) model.UserResult {
 }
 
 // 단일 유저 삭제
-func  (self UserService) DeleteUser(userId string) model.UserResult {
+func (self UserService) DeleteUser(userId string) model.UserResult {
 	result := model.UserResult{}
-	// 셀렉트 먼저 해봄
-	sql := fmt.Sprintf("SELECT id FROM user WHERE id = %s", userId)
-	err := self.DB.QueryRow(sql).Scan(&result.UserData.ID)
+
+	// 삭제 할 유저가 있는지 확인
+	getUserQuery := "SELECT id FROM user WHERE id = ?"
+	getUserStmt, err := self.DB.Prepare(getUserQuery)
 	if err != nil {
-		log.Println(err)
-		
+		fmt.Println(err)
+		result.Status = http.StatusInternalServerError
+		result.Message = "내부 서버 오류"
+		result.Cmd = "ERROR"
+		return result
+	}
+	defer getUserStmt.Close()
+
+	err = getUserStmt.QueryRow(userId).Scan(&result.UserData.ID)
+	if err != nil {
 		result.Status = http.StatusNoContent
 		result.Message = "등록된 회원 정보가 없습니다."
 		result.Cmd = "DELETE"
-
 		return result
 	}
-	sql = fmt.Sprintf("Delete FROM user WHERE id = %d", result.UserData.ID)
-	_, delErr := self.DB.Query(sql)
+
+	// 삭제하기
+	delUserQuery := "Delete FROM user WHERE id = ?"
+	delUserStmt, err := self.DB.Prepare(delUserQuery)
+	if err != nil {
+		fmt.Println(err)
+		result.Status = http.StatusInternalServerError
+		result.Message = "내부 서버 오류"
+		result.Cmd = "ERROR"
+		return result
+	}
+	defer delUserStmt.Close()
+
+	_, delErr := delUserStmt.Query(result.UserData.ID)
 
 	if delErr != nil {
 		log.Println(delErr)
-
 		result.Status = http.StatusBadRequest
 		result.Message = "회원 삭제 오류"
 		result.Cmd = "DELETE"
-
 		return result
 	}
-	
+
 	result.Status = http.StatusOK
 	result.Message = "회원 삭제 성공"
 	result.Cmd = "DELETE"

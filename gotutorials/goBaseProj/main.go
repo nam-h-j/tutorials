@@ -42,5 +42,11 @@ func main() {
 	db.QueryRow("SELECT VERSION()").Scan(&version)
 	fmt.Println("Connected to mysql version: ", version)
 
+	// r := router.Router(db)
+
+	// gin.SetMode(gin.ReleaseMode)
+
+	// r.Run(":1234")
+
 	http.ListenAndServe(":1234", router.Router(db))
 }
