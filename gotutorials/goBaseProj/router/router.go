@@ -7,6 +7,8 @@ import (
 	"../middleware"
 
 	"github.com/gin-gonic/gin"
+	// swaggerFiles "github.com/swaggo/files"
+	// ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func Router(db *sql.DB) *gin.Engine {
@@ -17,6 +19,7 @@ func Router(db *sql.DB) *gin.Engine {
 	// 라우터에서 디비 미들웨어를 통해 디비 풀을 재사용 하도록 함
 	router.Use(middleware.MiddleDB(db))
 
+	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	// index
 	// router.GET("/", indexHandler)
 
