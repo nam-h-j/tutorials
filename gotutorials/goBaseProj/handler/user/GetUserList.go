@@ -3,13 +3,13 @@ package user
 import (
 	"database/sql"
 
-	"../../model"
-	"./service"
+	"goBaseProj/handler/user/service"
+	"goBaseProj/model"
 
 	"github.com/gin-gonic/gin"
 )
 
-func GetUserList(c *gin.Context){
+func GetUserList(c *gin.Context) {
 
 	db, ok := c.MustGet("databaseConn").(*sql.DB)
 	if !ok {

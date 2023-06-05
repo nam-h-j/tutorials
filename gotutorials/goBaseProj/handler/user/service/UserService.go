@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"../../../model"
+	"goBaseProj/model"
 )
 
 type UserService struct {

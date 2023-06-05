@@ -4,13 +4,13 @@ import (
 	"database/sql"
 	"net/http"
 
-	"../../model"
-	"./service"
+	"goBaseProj/handler/user/service"
+	"goBaseProj/model"
 
 	"github.com/gin-gonic/gin"
 )
 
-func PutUser(c *gin.Context){
+func PutUser(c *gin.Context) {
 	resBody := model.User{}
 
 	// 디비풀 연결
@@ -21,7 +21,7 @@ func PutUser(c *gin.Context){
 
 	// response 객체 검사
 	err := c.BindJSON(&resBody)
-	if err != nil{
+	if err != nil {
 		return
 	}
 
@@ -31,9 +31,9 @@ func PutUser(c *gin.Context){
 	res := model.UserResult{}
 	res = userService.PutUser(resBody)
 
-		// 정상적인 INSERT 아니면 상태를 RETURN
-		if res.Status != http.StatusOK {
-			c.JSON(res.Status, res)
-			return
-		}
+	// 정상적인 INSERT 아니면 상태를 RETURN
+	if res.Status != http.StatusOK {
+		c.JSON(res.Status, res)
+		return
+	}
 }
