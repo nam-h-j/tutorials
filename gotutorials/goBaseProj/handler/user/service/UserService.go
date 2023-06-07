@@ -115,33 +115,6 @@ func (self UserService) GetUser(userId string) model.UserResult {
 	}
 	result.UserData = tmp_item
 
-	// for rows.Next() {
-	// 	tmp_item := model.User{}
-	// 	err := rows.Scan(
-	// 		&tmp_item.ID,
-	// 		&tmp_item.FirstName,
-	// 		&tmp_item.LastName,
-	// 		&tmp_item.Email,
-	// 		&tmp_item.CreatedAt,
-	// 	)
-	// 	fmt.Println(tmp_item.ID)
-	// 	if err != nil {
-	// 		log.Fatal(err)
-	// 	}
-	// 	result.UserData = tmp_item
-	// }
-
-	// // 일치하는 정보 없음
-	// if err != nil {
-	// 	log.Println(err)
-
-	// 	result.Status = http.StatusNoContent
-	// 	result.Message = "등록된 회원 정보가 없습니다."
-	// 	result.Cmd = "SELECT"
-
-	// 	return result
-	// }
-
 	result.Status = http.StatusOK
 	result.Message = "success"
 	result.Cmd = "SELECT"
@@ -185,6 +158,7 @@ func (self UserService) PostUser(body model.User) model.UserResult {
 	result.Status = http.StatusOK
 	result.Message = strconv.FormatInt(lastInsertId, 10)
 	result.Cmd = "INSERT"
+	result.UserData = body
 
 	log.Println("정보 등록 성공", lastInsertId)
 

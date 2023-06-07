@@ -9,6 +9,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// GetUserList godoc
+// @Tags         유저 정보 관리
+// @Summary      정산 정보 목록 열람
+// @Description  정산 정보 목록을 가져옵니다.
+// @Produce      json
+// @Success      200  {array}  model.UserListResult
+// @Router       /user/ [get]
 func GetUserList(c *gin.Context) {
 
 	db, ok := c.MustGet("databaseConn").(*sql.DB)
