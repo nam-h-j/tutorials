@@ -1,3 +1,0 @@
-root = "."
-build = "go build -o ./tmp/main ."
-command = "./tmp/main"
