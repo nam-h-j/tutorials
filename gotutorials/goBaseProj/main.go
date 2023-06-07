@@ -47,7 +47,7 @@ func main() {
 	// 디비 연결 확인
 	var version string
 	db.QueryRow("SELECT VERSION()").Scan(&version)
-	fmt.Println("Connected to mysql version:", version)
+	fmt.Println("Connected to mysql version: ", version)
 
 	// r := router.Router(db)
 	// router.Run(":1234")

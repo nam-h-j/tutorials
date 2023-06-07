@@ -29,6 +29,8 @@ func Router(db *sql.DB) *gin.Engine {
 	// router.GET("/", indexHandler)
 	router.GET("/welcome/:name", welcomePathParam)
 
+	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	userRouter := router.Group("user")
 	userRouter.GET("/", user.GetUserList)
 	userRouter.GET("/:id", user.GetUser)
@@ -36,8 +38,6 @@ func Router(db *sql.DB) *gin.Engine {
 	userRouter.DELETE("/:id", user.DeleteUser)
 	userRouter.PUT("/", user.PutUser)
 	// router.PUT("/user", updateUserHandler)
-
-	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return router
 }
@@ -48,6 +48,7 @@ type welcomeModel struct {
 }
 
 // Welcome godoc
+// @Tags Welcome!
 // @Summary 스웨거 테스트용 핸들러
 // @Description 스웨거 테스트용 핸들러 Desc
 // @name get-string-by-int

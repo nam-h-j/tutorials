@@ -10,6 +10,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// PostUser godoc
+// @Tags         유저 정보 관리
+// @Summary      유저 정보 등록
+// @Description  유저 정보를 등록합니다.
+// @Produce      json
+// @Param 		 Param body model.User true "유저 정보 JSON Format"
+// @Success      200  {array}  model.UserResult
+// @Router       /user [post]
 func PostUser(c *gin.Context) {
 	resBody := model.User{}
 
