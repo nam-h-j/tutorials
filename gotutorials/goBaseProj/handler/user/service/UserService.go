@@ -74,6 +74,10 @@ func (self UserService) GetUserList() model.UserListResult {
 func (self UserService) GetUser(userId string) model.UserResult {
 	result := model.UserResult{}
 
+	// 파라미터를 확인한다.
+	fmt.Println("userID : ", userId)
+
+	// prepared statement
 	getUserQuery := "SELECT id, f_name, l_name, email, created_at FROM user WHERE id = ?"
 	getUserStmt, err := self.DB.Prepare(getUserQuery)
 	if err != nil {
@@ -85,36 +89,25 @@ func (self UserService) GetUser(userId string) model.UserResult {
 	}
 	defer getUserStmt.Close()
 
-	rows, err := getUserStmt.Query(userId)
-	if err != nil {
-		fmt.Println(err)
-		result.Status = http.StatusInternalServerError
-		result.Message = "내부 서버 오류"
-		result.Cmd = "ERROR"
-		return result
-	}
-	defer rows.Close()
-
-	if !rows.Next() { // 결과가 없는 경우
-		result.Status = http.StatusNoContent
-		result.Message = "등록된 회원 정보가 없습니다."
-		result.Cmd = "SELECT"
-		result.UserData = model.User{}
-		return result
-	}
+	// run query, Scan Data
+	// single row를 가져올땐 QueryRow를 사용한다.
 	tmp_item := model.User{}
-	err = rows.Scan(
+	err = getUserStmt.QueryRow(userId).Scan(
 		&tmp_item.ID,
 		&tmp_item.FirstName,
 		&tmp_item.LastName,
 		&tmp_item.Email,
-		&tmp_item.CreatedAt,
-	)
+		&tmp_item.CreatedAt)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
+		result.Status = http.StatusBadRequest
+		result.Message = "등록된 회원 정보가 없습니다."
+		result.Cmd = "ERROR"
+		return result
 	}
-	result.UserData = tmp_item
 
+	// success resp
+	result.UserData = tmp_item
 	result.Status = http.StatusOK
 	result.Message = "success"
 	result.Cmd = "SELECT"
