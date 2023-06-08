@@ -19,10 +19,10 @@ func (self UserService) GetUserList() model.UserListResult {
 	result := model.UserListResult{}
 
 	// prepared statements
-	getUserListQuery := "SELECT id, f_name, l_name, email, created_at FROM user"
+	getUserListQuery := "SELECT user_id, f_name, l_name, email, created_at FROM user"
 	getUserListStmt, err := self.DB.Prepare(getUserListQuery)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("[prepared statement 생성 실패] : ", err)
 		result.Status = http.StatusInternalServerError
 		result.Message = "내부 서버 오류"
 		result.Cmd = "ERROR"
@@ -41,7 +41,7 @@ func (self UserService) GetUserList() model.UserListResult {
 	for rows.Next() {
 		tmp_item := model.User{}
 		err := rows.Scan(
-			&tmp_item.ID,
+			&tmp_item.UserID,
 			&tmp_item.FirstName,
 			&tmp_item.LastName,
 			&tmp_item.Email,
@@ -71,17 +71,17 @@ func (self UserService) GetUserList() model.UserListResult {
 }
 
 // 단일 유저 취득
-func (self UserService) GetUser(userId string) model.UserResult {
+func (self UserService) GetUser(userId int) model.UserResult {
 	result := model.UserResult{}
 
 	// 파라미터를 확인한다.
 	fmt.Println("userID : ", userId)
 
 	// prepared statement
-	getUserQuery := "SELECT id, f_name, l_name, email, created_at FROM user WHERE id = ?"
+	getUserQuery := "SELECT user_id, f_name, l_name, email, created_at FROM user WHERE user_id = ?"
 	getUserStmt, err := self.DB.Prepare(getUserQuery)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("[prepared statement 생성 실패] : ", err)
 		result.Status = http.StatusInternalServerError
 		result.Message = "내부 서버 오류"
 		result.Cmd = "ERROR"
@@ -93,7 +93,7 @@ func (self UserService) GetUser(userId string) model.UserResult {
 	// single row를 가져올땐 QueryRow를 사용한다.
 	tmp_item := model.User{}
 	err = getUserStmt.QueryRow(userId).Scan(
-		&tmp_item.ID,
+		&tmp_item.UserID,
 		&tmp_item.FirstName,
 		&tmp_item.LastName,
 		&tmp_item.Email,
@@ -119,7 +119,7 @@ func (self UserService) GetUser(userId string) model.UserResult {
 func (self UserService) PostUser(body model.User) model.UserResult {
 	result := model.UserResult{}
 
-	postUserQuery := "INSERT INTO user( id, f_name, l_name, email, created_at) VALUES(?, ?, ?, ?, now());"
+	postUserQuery := "INSERT INTO user( user_id, f_name, l_name, email, created_at) VALUES(?, ?, ?, ?, now());"
 	postUserStmt, err := self.DB.Prepare(postUserQuery)
 	if err != nil {
 		fmt.Println(err)
@@ -131,7 +131,7 @@ func (self UserService) PostUser(body model.User) model.UserResult {
 	defer postUserStmt.Close()
 
 	// post 요청하기
-	res, err := postUserStmt.Exec(strconv.Itoa(body.ID), body.FirstName, body.LastName, body.Email)
+	res, err := postUserStmt.Exec(strconv.Itoa(body.UserID), body.FirstName, body.LastName, body.Email)
 	if err != nil {
 		result.Status = http.StatusInternalServerError
 		result.Message = "정보 등록 실패"
@@ -149,10 +149,7 @@ func (self UserService) PostUser(body model.User) model.UserResult {
 	}
 
 	result.Status = http.StatusOK
-	result.Message = strconv.FormatInt(lastInsertId, 10)
-	result.Cmd = "INSERT"
-	result.UserData = body
-
+	result.UserData.UserID = int(lastInsertId)
 	log.Println("정보 등록 성공", lastInsertId)
 
 	return result
@@ -163,7 +160,7 @@ func (self UserService) PutUser(body model.User) model.UserResult {
 	result := model.UserResult{}
 
 	// prepared statement
-	putUserQuery := "UPDATE user SET f_name = ?, l_name = ? WHERE id = ?"
+	putUserQuery := "UPDATE user SET f_name = ?, l_name = ? WHERE user_id = ?"
 	putUserStmt, err := self.DB.Prepare(putUserQuery)
 	if err != nil {
 		fmt.Println(err)
@@ -177,13 +174,13 @@ func (self UserService) PutUser(body model.User) model.UserResult {
 	// post 요청 body 값 확인
 	fmt.Println(
 		"[*** PUT Req Body ***] \n",
-		"id : ", body.ID, "\n",
+		"id : ", body.UserID, "\n",
 		"f_name : ", body.FirstName, "\n",
 		"l_name : ", body.LastName,
 	)
 
 	// UPDATE 쿼리요청
-	res, err := putUserStmt.Exec(body.FirstName, body.LastName, body.ID)
+	res, err := putUserStmt.Exec(body.FirstName, body.LastName, body.UserID)
 	if err != nil {
 		result.Status = http.StatusBadRequest
 		result.Message = "정보 수정 실패"
@@ -204,6 +201,7 @@ func (self UserService) PutUser(body model.User) model.UserResult {
 	result.Status = http.StatusOK
 	result.Message = fmt.Sprintf("정보 수정에 성공하였습니다. (%d 개 데이터 수정 됨)", rowsAffected)
 	result.Cmd = "UPDATE"
+	result.UserData.UserID = (body.UserID)
 
 	return result
 }
@@ -213,7 +211,7 @@ func (self UserService) DeleteUser(userId string) model.UserResult {
 	result := model.UserResult{}
 
 	// Prepared Statement
-	getUserQuery := "SELECT id FROM user WHERE id = ?"
+	getUserQuery := "SELECT id FROM user WHERE user_id = ?"
 	getUserStmt, err := self.DB.Prepare(getUserQuery)
 	if err != nil {
 		fmt.Println(err)
@@ -224,7 +222,7 @@ func (self UserService) DeleteUser(userId string) model.UserResult {
 	}
 	defer getUserStmt.Close()
 
-	err = getUserStmt.QueryRow(userId).Scan(&result.UserData.ID)
+	err = getUserStmt.QueryRow(userId).Scan(&result.UserData.UserID)
 	if err != nil {
 		result.Status = http.StatusBadRequest
 		result.Message = "등록된 회원 정보가 없습니다."
@@ -233,7 +231,7 @@ func (self UserService) DeleteUser(userId string) model.UserResult {
 	}
 
 	// 삭제하기
-	delUserQuery := "Delete FROM user WHERE id = ?"
+	delUserQuery := "Delete FROM user WHERE user_id = ?"
 	delUserStmt, err := self.DB.Prepare(delUserQuery)
 	if err != nil {
 		fmt.Println(err)
@@ -244,7 +242,7 @@ func (self UserService) DeleteUser(userId string) model.UserResult {
 	}
 	defer delUserStmt.Close()
 
-	_, delErr := delUserStmt.Query(result.UserData.ID)
+	_, delErr := delUserStmt.Query(result.UserData.UserID)
 
 	if delErr != nil {
 		log.Println(delErr)
