@@ -7,10 +7,10 @@ definitions:
         type: string
       f_name:
         type: string
-      id:
-        type: integer
       l_name:
         type: string
+      user_id:
+        type: integer
     type: object
   model.UserListResult:
     properties:
@@ -27,6 +27,24 @@ definitions:
         items:
           $ref: '#/definitions/model.User'
         type: array
+    type: object
+  model.UserPostReq:
+    properties:
+      email:
+        type: string
+      f_name:
+        type: string
+      l_name:
+        type: string
+    type: object
+  model.UserPutReq:
+    properties:
+      f_name:
+        type: string
+      l_name:
+        type: string
+      user_id:
+        type: integer
     type: object
   model.UserResult:
     properties:
@@ -67,7 +85,7 @@ paths:
         name: Param
         required: true
         schema:
-          $ref: '#/definitions/model.User'
+          $ref: '#/definitions/model.UserPostReq'
       produces:
       - application/json
       responses:
@@ -88,7 +106,7 @@ paths:
         name: Param
         required: true
         schema:
-          $ref: '#/definitions/model.User'
+          $ref: '#/definitions/model.UserPutReq'
       produces:
       - application/json
       responses:
