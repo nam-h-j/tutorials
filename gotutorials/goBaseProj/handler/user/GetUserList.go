@@ -23,7 +23,6 @@ func GetUserList(c *gin.Context) {
 		panic(ok)
 	}
 	userService := service.UserService{db}
-
 	resp := model.UserListResult{}
 	resp = userService.GetUserList()
 	c.JSON(resp.Status, resp)

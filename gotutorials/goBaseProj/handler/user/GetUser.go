@@ -2,6 +2,8 @@ package user
 
 import (
 	"database/sql"
+	"fmt"
+	"strconv"
 
 	"goBaseProj/handler/user/service"
 	"goBaseProj/model"
@@ -18,8 +20,11 @@ import (
 // @Success      200  {array}  model.UserResult
 // @Router       /user/{userId} [get]
 func GetUser(c *gin.Context) {
-	userId := c.Param("id")
-
+	userIdParam := c.Param("id")
+	userId, err := strconv.Atoi(userIdParam)
+	if err != nil {
+		fmt.Println(err)
+	}
 	db, ok := c.MustGet("databaseConn").(*sql.DB)
 	if !ok {
 		panic(ok)

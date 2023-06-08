@@ -33,7 +33,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.User"
+                            "$ref": "#/definitions/model.UserPutReq"
                         }
                     }
                 ],
@@ -65,7 +65,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/model.User"
+                            "$ref": "#/definitions/model.UserPostReq"
                         }
                     }
                 ],
@@ -213,11 +213,11 @@ const docTemplate = `{
                 "f_name": {
                     "type": "string"
                 },
-                "id": {
-                    "type": "integer"
-                },
                 "l_name": {
                     "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         },
@@ -241,6 +241,34 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/model.User"
                     }
+                }
+            }
+        },
+        "model.UserPostReq": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "f_name": {
+                    "type": "string"
+                },
+                "l_name": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.UserPutReq": {
+            "type": "object",
+            "properties": {
+                "f_name": {
+                    "type": "string"
+                },
+                "l_name": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         },
