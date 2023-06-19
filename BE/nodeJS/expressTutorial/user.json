@@ -1,0 +1,16 @@
+{
+    "name": "jonathan",
+    "lastname": "sanchez",
+    "age": 23,
+    "hobbies": [
+        "videojuegos",
+        "programar",
+        "leer"
+    ],
+    "address": {
+        "street": "calle 1",
+        "number": 123,
+        "city": "bogota",
+        "country": "colombia"
+    }
+}
