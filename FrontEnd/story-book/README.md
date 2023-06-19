@@ -15,6 +15,9 @@
 - 유저에게 일관된 경험을 제공
 - 디자이너와 개발자간 소통이 쉬워진다.
 
+## 스토리북 사이트에서 컴포넌트 관리 예시 확인하기
+- 스토리북 메인 > Showcase
+
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
