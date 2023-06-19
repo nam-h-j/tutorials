@@ -1,3 +1,25 @@
+# story book tutorial
+## 스토리북의 장점
+- 컴포넌트 개별 정돈 편리
+- 재사용성을 고려한 디자인 & 개발기능
+- 개별 테스트에 용이
+
+## 재사용성의 장점
+### 개발
+- 불필요한 작업을 줄여준다.
+- 안정적으로 검증된 코드 사용
+- 캡슐화를 통해 테스트가 쉬워진다.
+
+### 디자인
+- 디자인 변경시 쉽게 수정 가능
+- 유저에게 일관된 경험을 제공
+- 디자이너와 개발자간 소통이 쉬워진다.
+
+## 스토리북 사이트에서 컴포넌트 관리 예시 확인하기
+https://storybook.js.org/
+- 스토리북 메인 > Showcase
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
