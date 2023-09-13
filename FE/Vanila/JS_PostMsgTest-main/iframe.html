@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>iframe</title>
+  </head>
+  <script type="text/javascript">
+    //setter
+    window.addEventListener("load", function () {
+      const setOrigin = window.location.protocol + "//" + window.location.host;
+      const data = "this data from iframe";
+      window.parent.postMessage(data, setOrigin);
+    });
+    //setter
+  </script>
+  <body>
+    i'll send data to you!
+  </body>
+</html>

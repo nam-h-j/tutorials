@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <!--[if lt IE 9]>
+    <script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+    <![endif]-->
+    <meta charset="utf-8">
+    <title>fbq_ga_Aos_Testing</title>
+    <!-- google_analytics -->
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-164772908-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-164772908-1');
+    </script>
+    <!-- End google_analytics -->
+
+    <!-- Facebook Pixel Code -->
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '229256201524946');
+      fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=229256201524946&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Facebook Pixel Code -->
+
+    <link href="https://fonts.googleapis.com/earlyaccess/sawarabigothic.css?v=7f9d3660dd1fe115" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+
+    <!-- AOS.css -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- End AOS.css -->
+  </head>
+  <body>
+    <!-- navigation -->
+    <nav data-aos="fade-up">
+      <ul>
+        <li><a href="#top">Top</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Characters</a></li>
+        <li><a href="#">Tweets</a></li>
+        <li><a href="#">Follows</a></li>
+        <li><a href="#">Ask</a></li>
+      </ul>
+    </nav>
+    <!-- End navigation -->
+
+    <!-- title -->
+    <div id="top" class="container">
+      <h1>hello</h1>
+
+      <div class="get_tweet_btns">
+        <a
+          href="https://twitter.com/TwitterDev?ref_src=twsrc%5Etfw"
+          class="twitter-follow-button"
+          data-show-count="false">Follow @TwitterDev
+        </a>
+        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+      </div>
+
+    </div>
+    <!-- title -->
+
+    <!-- content -->
+    <div class="container">
+      <div class="get_teewt_timeline">
+        <a
+          class="twitter-timeline"
+          data-chrome="noheader"
+          href="https://twitter.com/TwitterDev/timelines/539487832448843776?ref_src=twsrc%5Etfw">
+          National Park Tweets - Curated tweets by TwitterDev
+        </a>
+        <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+      </div>
+    </div>
+    <!-- End content -->
+
+    <!-- <div class="ga">
+      <img src="https://t1.daumcdn.net/cfile/tistory/999A6D4F5BBFF23228" alt="google_analytics">
+      Google Analytics
+      <button type="button" name="button"></button>
+    </div> -->
+
+    <!-- Aos.js -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init({
+        duration: 1200,
+      });
+    </script>
+    <!-- End Aos.js-->
+  </body>
+</html>

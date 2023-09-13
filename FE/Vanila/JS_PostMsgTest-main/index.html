@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Testing of pass iframe data to parent page</title>
+  </head>
+  <script>
+    function iframeStart() {
+      frmstart.location.href = "./iframe.html";
+    }
+
+    //getter
+    window.addEventListener("message", function (e) {
+      console.log("parent html get data: " + e.data);
+    });
+    //getter
+  </script>
+  <body>
+    <button onclick="javascript:iframeStart()">iframeStart</button>
+    <iframe
+      name="frmstart"
+      style="border: 0; width: 0; height: 0; margin: 0; padding: 0"
+      disabled
+    ></iframe>
+    <div id="reslut"></div>
+    <script>
+      document.getElementById("reslut").innerHTML =
+        "this is result from iframe";
+    </script>
+  </body>
+</html>

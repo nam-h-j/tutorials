@@ -1,0 +1,45 @@
+@charset "UTF-8";
+
+body, html{
+  margin: 0;
+  padding: 0;
+  font-family: "Sawarabi Gothic",Helvetica Neue,Arial,sans-serif,"Hiragino Kaku Gothic Pro","メイリオ";
+}
+/* nav */
+nav{
+  width: 100%;
+}
+
+nav ul {
+  display: flex;
+  justify-content: space-around;
+  list-style: none;
+}
+
+nav ul li{
+
+}
+/* end nav */
+/* tweets.css */
+.get_teewt_timeline{
+  height: 40em;
+  overflow: scroll;
+}
+
+.container{
+  margin: 0 auto;
+  max-width: 1200px;
+  text-align: center;
+  padding: 0 10em;
+  box-sizing: border-box;
+}
+
+nav{
+  max-width: 100%;
+}
+
+#test{
+  width: 100px;
+  height: 100px;
+  background: #eeeeee;
+}
