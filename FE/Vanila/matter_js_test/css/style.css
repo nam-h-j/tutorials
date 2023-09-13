@@ -1,0 +1,23 @@
+html, body{
+    margin: 0;
+    padding: 0;
+    font-size: 0;
+}
+.heart_wrap{
+    position: relative;
+    margin: 0 auto;
+    width: 437px;
+    height: 382px;
+    overflow: hidden;
+}
+.heart_wrap > .matter_canvas{
+    background: url(../img/base.png) no-repeat center top;
+}
+.heart_wrap > .cover{
+    position: absolute;
+    top: 12px;
+    left: 9px;
+    width: 417px;
+    height: 352px;
+    background: url(../img/cover.png) no-repeat center top;
+}

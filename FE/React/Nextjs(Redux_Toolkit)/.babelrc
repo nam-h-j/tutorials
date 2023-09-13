@@ -1,0 +1,4 @@
+//jenkinsで buildエラー発生する時このファイルの追加が必要。
+{
+  "presets": ["next/babel"]
+}

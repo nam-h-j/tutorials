@@ -1,0 +1,133 @@
+@import './mixin';
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 16px;
+  min-width: 320px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  display: block;
+}
+
+* {
+  box-sizing: border-box;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: normal;
+  letter-spacing: normal;
+}
+
+.fixedOn {
+  position: fixed;
+  width: 100%;
+}
+.fixedOff {
+  position: static;
+  width: auto;
+}
+
+svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+//paging
+.paging {
+  width: 100%;
+  margin-top: 20px;
+  margin-bottom: 60px;
+  display: flex;
+  justify-content: center;
+  &.removeLeftArrows {
+    .MuiPagination-ul {
+      li {
+        &:first-child {
+          visibility: hidden;
+        }
+        &:nth-child(2) {
+          visibility: hidden;
+        }
+      }
+    }
+  }
+  &.removeRightArrows {
+    .MuiPagination-ul {
+      li {
+        &:last-child {
+          visibility: hidden;
+        }
+        &:nth-last-child(2) {
+          visibility: hidden;
+        }
+      }
+    }
+  }
+  @include sm {
+    @include vw('sm', margin-bottom, 20);
+  }
+  .MuiPagination-ul {
+    li {
+      &:first-child {
+        button {
+          border-right: 0;
+        }
+      }
+      &:nth-child(2) {
+        button {
+          margin-right: 20px;
+        }
+      }
+      &:nth-last-child(2) {
+        button {
+          margin-left: 20px;
+        }
+      }
+      &:last-child {
+        button {
+          border-left: 0;
+        }
+      }
+    }
+    .MuiPaginationItem-text {
+      width: 48px;
+      height: 48px;
+      font-size: 14px;
+      border-radius: 0;
+      margin: 0;
+      color: var(--fontBlack);
+      @include notoFontWeight('regular');
+      @include sm {
+        @include vw('sm', font-size, 10);
+        @include vw('sm', width, 30);
+        @include vw('sm', height, 30);
+      }
+    }
+    .Mui-selected {
+      font-size: 16px;
+      color: #fff;
+      background-color: #d54c4c;
+      &:hover {
+        background-color: #d54c4c;
+      }
+      @include notoFontWeight('regular');
+    }
+    .MuiPaginationItem-previousNext,
+    .MuiPaginationItem-firstLast {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: solid 1px #ddd;
+      svg {
+        width: 20px;
+        height: 20px;
+        position: relative;
+      }
+    }
+  }
+}

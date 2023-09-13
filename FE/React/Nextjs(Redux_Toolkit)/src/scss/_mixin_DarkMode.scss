@@ -1,0 +1,20 @@
+//DarkModeMixin
+//colors
+/** DarkModeColor **/
+.lightMode {
+  --background: #fff;
+  --boxColor: #fff;
+  --boxBorder: #dddddd;
+  --btnBorder: #d8d8d8;
+  --fontBlack: #444444;
+  --fontGray: #888888;
+}
+
+.darkMode {
+  --background: #101010;
+  --boxColor: #202020;
+  --boxBorder: #444444;
+  --btnBorder: #dddddd;
+  --fontBlack: #dddddd;
+  --fontGray: #dddddd;
+}

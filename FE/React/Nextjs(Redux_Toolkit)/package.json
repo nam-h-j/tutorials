@@ -1,0 +1,57 @@
+{
+  "name": "my_app",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "start": "next start",
+    "dev:prod": "cross-env ENVIRONMENT=prod DEBUGMODE=true BUILDMODE=false run-s env dev",
+    "build": "next build && next export -o dist",
+    "build:next": "next build",
+    "build:dist": "next export -o dist",
+    "build:dev": "cross-env ENVIRONMENT=development DEBUGMODE=true run-s lint build:next build:dist",
+    "build:prod": "cross-env ENVIRONMENT=prod DEBUGMODE=false run-s lint build:next build:dist fix:cache-clear",
+    "lint": "eslint --ext .ts,.tsx src/",
+    "lint:fix": "eslint --fix",
+    "fix:cache-clear": "node ./scripts/clear_cache.js"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
+    "@mui/material": "^5.2.5",
+    "@reduxjs/toolkit": "^1.7.1",
+    "@svgr/webpack": "^6.1.2",
+    "@typescript-eslint/eslint-plugin": "^5.8.0",
+    "@typescript-eslint/parser": "^5.8.0",
+    "axios": "^0.24.0",
+    "cross-env": "^7.0.3",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.27.1",
+    "next": "12.0.7",
+    "next-compose-plugins": "^2.2.1",
+    "npm-run-all": "^4.1.5",
+    "postcss": "^8.4.5",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-player": "^2.9.0",
+    "react-redux": "^7.2.6",
+    "react-swipeable": "^6.2.0",
+    "react-use": "^17.3.2",
+    "redux": "^4.1.2",
+    "redux-logger": "^3.0.6",
+    "sass": "^1.45.1"
+  },
+  "devDependencies": {
+    "@types/node": "17.0.2",
+    "@types/react": "17.0.37",
+    "@types/react-redux": "^7.1.20",
+    "@types/redux-logger": "^3.0.9",
+    "eslint": "^8.5.0",
+    "eslint-config-next": "12.0.7",
+    "eslint-config-prettier": "^8.3.0",
+    "prettier": "^2.5.1",
+    "typescript": "4.5.4"
+  },
+  "msw": {
+    "workerDirectory": "public"
+  }
+}
