@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>getInstagramFeed</title>
+    <link href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c" rel="stylesheet">
+    <style media="screen">
+      html, body { font-family: "M PLUS Rounded 1c"; }
+      .colorModlue{
+          margin: 0 auto;
+          width: 50em;
+      }
+
+      .instagram{
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 10px;
+        grid-auto-rows: minmax(100px, 100px);
+      }
+      .instagram a{
+        width: 5em;
+        height: 5sem;
+      }
+      .instagram a img{
+        width: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div>
+      テキスト、文字
+    </div>
+    <div class="colorModlue">
+      <button onClick="imgChanger()">できます？</button>
+      <img class="image" alt="101" src="./assets/image/101.jpg"/>
+    </div>
+
+    <script type="text/javascript">
+
+      // imageChanger
+      imgChanger = () => {
+        let imgAlt = document.querySelector('.image').getAttribute('alt');
+        let imgNum = imgAlt.charAt(imgAlt.length-1)*1;
+
+        if(imgNum === 1){
+          imgAlt = (imgAlt*1)+1;
+        }else{
+          imgAlt = (imgAlt*1) - 1;
+        }
+        let imgSrc = './assets/image/' + imgAlt + '.jpg';
+        document.querySelector(".image").setAttribute('src', imgSrc);
+        document.querySelector(".image").setAttribute('alt', imgAlt);
+      }
+
+
+    </script>
+  </body>
+</html>
